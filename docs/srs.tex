@@ -1,0 +1,220 @@
+\documentclass[11pt, letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[spanish]{babel}
+\usepackage[letterpaper, top=1.5cm, bottom=1.5cm, left=1.27cm, right=1.27cm]{geometry}
+\usepackage{titlesec}
+\usepackage{enumitem} 
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage[hidelinks]{hyperref}
+
+\linespread{1.1}
+
+\titleformat{\section}{\Large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries}{\thesubsubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{18pt}{6pt}
+\titlespacing*{\subsection}{0pt}{12pt}{4pt}
+\titlespacing*{\subsubsection}{0pt}{8pt}{2pt}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\renewcommand{\arraystretch}{1.3}
+\pagestyle{plain}
+
+\begin{document}
+
+\begin{titlepage}
+    \centering
+    \vspace*{1.5cm}
+
+    {\Huge \textbf{SkyAnalytics Inc.}}\\[1cm]
+    {\footnotesize\textbf{Drive:} \texttt{https://drive.google.com/drive/folders/1f9FfqWsVkM63CCfhutV755ouBE61dDS6?usp=sharing}}\\[0.2cm]
+    {\footnotesize \textbf{Github:} \texttt{https://github.com/khrizzcoronel/SkyAnalytics.git}}\\[0.8cm]
+    {\Large \textbf{Especificación de Requisitos de Software (SRS)}}\\[0.3cm]
+
+    {\normalsize \textit{Basado en el Estándar IEEE 830}}\\[0.3cm]
+    {\normalsize \textit{Khriz Coronel}}\\[0.3cm]
+    {\normalsize \textit{Versión 1.0}}\\[0.3cm]
+
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+%=====================================================================
+% 1. INTRODUCCIÓN
+%=====================================================================
+
+\section{Introducción}
+
+\subsection{Propósito}
+El propósito de este documento es definir la Especificación de Requisitos de Software (SRS) para la plataforma SaaS corporativa **SkyAnalytics**. Este documento sirve como contrato técnico detallado para guiar el desarrollo de la arquitectura híbrida (transaccional y analítica) del sistema, alineando las metas comerciales delineadas en el *Balanced Scorecard* con la ejecución técnica.
+
+\subsection{Alcance}
+El sistema **SkyAnalytics** es una plataforma unificada para la industria aeronáutica. Proporciona ingesta automatizada de datos de vuelo, modelos predictivos de Machine Learning, y tableros interactivos (*dashboards*) para el monitoreo estratégico y táctico. El sistema abarca:
+\begin{itemize}
+    \item \textbf{Capa Estratégica:} Visualización de KPIs de negocio, salud financiera y metas corporativas.
+    \item \textbf{Capa Táctica (Command Center):} Monitoreo de integraciones de terceros (Sentry, GitHub), FinOps y reglas RBAC.
+    \item \textbf{Capa Operativa (Headless):} Ingesta y limpieza masiva de datos (ETL), orquestación vía GitHub Actions, y despliegue efímero de entrenamiento ML (Instancias Spot).
+\end{itemize}
+
+\subsection{Definiciones, Acrónimos y Abreviaturas}
+\begin{itemize}
+    \item \textbf{SRS:} Software Requirements Specification.
+    \item \textbf{BFF:} Backend-For-Frontend. Patrón arquitectónico donde el servidor actúa como capa intermedia dedicada a servir a un UI específico.
+    \item \textbf{RBAC:} Role-Based Access Control.
+    \item \textbf{ETL:} Extract, Transform, Load.
+    \item \textbf{Zero Trust:} Filosofía de seguridad donde ninguna conexión de red es confiable por defecto (Ej. usar Túneles SSH para conexiones internas).
+\end{itemize}
+
+\subsection{Referencias}
+\begin{itemize}
+    \item Documento de Perfil Estratégico y Corporativo (\texttt{docs/analisis.tex}).
+    \item Constitución de Arquitectura (SkyAnalytics \texttt{CONSTITUTION.md}).
+    \item Especificaciones y Planes de Diseño Técnico (Módulos 001, 002 y 003).
+\end{itemize}
+
+%=====================================================================
+% 2. DESCRIPCIÓN GENERAL
+%=====================================================================
+
+\section{Descripción General}
+
+\subsection{Perspectiva del Producto}
+SkyAnalytics se enmarca en un modelo de arquitectura \textbf{Monolito Modular Serverless}.
+La aplicación principal se construye utilizando \textbf{Next.js (App Router)} y se despliega en un proveedor PaaS Serverless (Vercel). 
+La persistencia de datos utiliza un enfoque híbrido:
+\begin{itemize}
+    \item \textbf{PocketBase (Operativa):} Base de datos ligera (SQLite) alojada en una VPS, responsable de la autenticación de usuarios, roles (RBAC), configuración del sistema, alertas y límites FinOps.
+    \item \textbf{MonetDB (Analítica):} Motor columnar Data Warehouse especializado en procesamiento de grandes volúmenes de datos. Almacena las tablas de hechos (*Fact Tables*) alimentadas por el ETL y expone vistas materializadas para lectura instantánea.
+\end{itemize}
+
+\subsection{Funciones del Producto}
+Las funciones del producto se dividen en 3 módulos principales:
+\begin{enumerate}
+    \item \textbf{Módulo Estratégico (Analítica Directiva):} Tableros de resumen (*Balanced Scorecard*), métricas financieras, telemetría y reportes de cumplimiento (exportables a PDF nativo).
+    \item \textbf{Módulo Táctico (Command Center):} Gestión centralizada de accesos de usuario, rotación de secretos en el pipeline CI/CD, monitoreo de presupuesto Cloud (FinOps), y proxy de logs de Sentry.
+    \item \textbf{Módulo Operativo (Backbone):} Trabajos programados vía GitHub Actions que ejecutan flujos ETL en Python (Pandas/Polars) con cuarentena de datos corruptos, y despliegue automatizado de modelos de ML en instancias efímeras (AWS Spot).
+\end{enumerate}
+
+\subsection{Características del Usuario}
+El sistema está diseñado para 3 niveles de actores internos:
+\begin{itemize}
+    \item \textbf{\texttt{SUPER\_ADMIN}:} CTO o líder técnico. Tiene control total sobre el Módulo Táctico (secretos, presupuesto, roles).
+    \item \textbf{\texttt{C\_LEVEL\_EXEC}:} Directivos y VP. Consumen el Módulo Estratégico para observar KPIs y establecer metas.
+    \item \textbf{\texttt{OPERATOR}:} Ingenieros de Datos y ML. Diseñan y vigilan el Módulo Operativo.
+\end{itemize}
+
+\subsection{Restricciones y Suposiciones}
+\begin{itemize}
+    \item \textbf{Enfoque Solo-Dev / Bajo Presupuesto:} El sistema prohíbe el uso de infraestructuras pesadas permanentemente encendidas (ej. Apache Airflow o AWS RDS PostgreSQL multicapa).
+    \item \textbf{Protección contra Timeouts:} Dado el entorno Serverless, las respuestas HTTP a APIs de terceros deben usar caché (\texttt{revalidate: 60}) y el entrenamiento de ML debe delegarse completamente a instancias externas.
+\end{itemize}
+
+%=====================================================================
+% 3. REQUISITOS ESPECÍFICOS
+%=====================================================================
+
+\section{Requisitos Específicos}
+
+\subsection{Requisitos de Interfaces Externas}
+El sistema integrará y consumirá datos de las siguientes APIs externas como "Single Source of Truth":
+\begin{itemize}
+    \item \textbf{GitHub REST API:} Para lectura de estado de pipelines de CI/CD e inyección de Secrets de entorno.
+    \item \textbf{Sentry API:} Para proxy en vivo de registros de errores.
+    \item \textbf{Stripe API / Webhooks:} Para conciliación de pagos en tiempo real.
+    \item \textbf{AWS Cost Explorer / PaaS Billing API:} Para auditoría financiera FinOps.
+\end{itemize}
+
+\subsection{Requisitos Funcionales por Módulo}
+
+\subsubsection{Módulo Estratégico (Capa Directiva)}
+\begin{table}[H]
+\small
+\centering
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{2cm}}
+\toprule
+\textbf{ID Requisito} & \textbf{Descripción del Caso de Uso} & \textbf{Dependencia} \\
+\midrule
+RF-E01 (BSC) & El sistema debe renderizar el Balanced Scorecard con semaforización (Verde, Amarillo, Rojo) contra las metas LTM. & MonetDB \\
+\midrule
+RF-E02 (Finanzas) & El sistema debe calcular dinámicamente el ARR, Gross Margin, LTV, y CAC forzando la moneda USD. & MonetDB \\
+\midrule
+RF-E03 (Telemetría) & El sistema debe mostrar el SLA y Uptime de los servicios para auditar el \textit{Error Budget}. & MonetDB \\
+\midrule
+RF-E05 (Metas) & El \texttt{SUPER\_ADMIN} podrá configurar metas trimestrales vía CRUD. & PocketBase \\
+\midrule
+RF-E06 (Export) & Las vistas analíticas deben proveer un botón para invocar \texttt{window.print()} con CSS \texttt{@media print}. & N/A \\
+\bottomrule
+\end{tabularx}
+\caption{Requisitos Funcionales del Módulo Estratégico}
+\end{table}
+
+\subsubsection{Módulo Táctico (Command Center)}
+\begin{table}[H]
+\small
+\centering
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{2cm}}
+\toprule
+\textbf{ID Requisito} & \textbf{Descripción del Caso de Uso} & \textbf{Dependencia} \\
+\midrule
+RF-T01 (RBAC) & Permitir definir matrices de permisos asociadas a Roles. & PocketBase \\
+\midrule
+RF-T02 (Logs) & Extraer y mostrar errores desde Sentry usando una tabla virtualizada (Infinite Scroll). & Sentry API \\
+\midrule
+RF-T03 (Secrets) & Proveer un formulario seguro para inyectar credenciales (Ej. DB\_PASSWORD) directo a GitHub Secrets. & GitHub API \\
+\midrule
+RF-T08 (FinOps) & Definir un presupuesto en PocketBase. Si el gasto del PaaS supera el 90\%, enviar Webhook a Slack. & AWS API \\
+\bottomrule
+\end{tabularx}
+\caption{Requisitos Funcionales del Módulo Táctico}
+\end{table}
+
+\subsubsection{Módulo Operativo (Backbone)}
+\begin{table}[H]
+\small
+\centering
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{2cm}}
+\toprule
+\textbf{ID Requisito} & \textbf{Descripción del Caso de Uso} & \textbf{Dependencia} \\
+\midrule
+RF-O01 (Cron ETL) & GitHub Actions orquestará el pipeline ETL Python diario a las 02:00 AM. & GitHub Actions \\
+\midrule
+RF-O02 (Cuarentena) & Si el ETL encuentra datos corruptos, no debe crashear; debe desviarlos a la tabla \texttt{Quarantine\_Data}. & MonetDB \\
+\midrule
+RF-O03 (Backups) & El cron de backups debe generar un volcado cifrado y enviarlo a AWS S3. & S3/KMS \\
+\midrule
+RF-O04 (ML Spot) & El script ML levantará una instancia Spot, entrenará, subirá el modelo a S3 y ejecutará \texttt{shutdown -h now}. & AWS EC2 \\
+\bottomrule
+\end{tabularx}
+\caption{Requisitos Funcionales del Módulo Operativo}
+\end{table}
+
+\subsection{Requisitos de Rendimiento}
+\begin{itemize}
+    \item \textbf{Tiempo de Respuesta (SLA):} Las llamadas al Backend-For-Frontend (BFF) del Módulo Estratégico deben resolverse en $\leq$ 3.0 segundos consultando las Vistas Materializadas de MonetDB.
+    \item \textbf{Disponibilidad (Uptime):} La arquitectura tolerante a fallos debe apuntar a un Uptime del 99.99\%.
+    \item \textbf{Caché en Proxy:} Las peticiones a APIs de terceros (Sentry, GitHub) en el Módulo Táctico deben ser cacheadas obligatoriamente durante al menos 60 segundos (\texttt{revalidate: 60}) para prevenir bloqueos por límite de cuota (Rate Limit 429).
+\end{itemize}
+
+\subsection{Atributos del Sistema de Software (Seguridad)}
+Basados en las directivas de la Constitución (Zero Trust y Cifrado), el sistema impone las siguientes políticas:
+\begin{itemize}
+    \item \textbf{Zero Trust y Túneles:} Los servicios expuestos (ETL en GitHub Actions) no accederán al puerto abierto de MonetDB en internet público. Es obligatorio levantar un Túnel efímero (SSH / Tailscale) en el *Runner* antes de iniciar la ingesta.
+    \item \textbf{Cifrado en Tránsito:} Toda comunicación hacia MonetDB requiere estrictamente \texttt{sslmode=require} (TLS 1.3).
+    \item \textbf{Cifrado en Reposo:} El disco de la VPS que contiene el archivo SQLite de PocketBase y la Data de MonetDB debe estar cifrado a nivel de volumen (AWS EBS Encryption o LUKS AES-256). Los backups enviados a S3 deben usar KMS.
+    \item \textbf{Autenticación Segura:} Las cuentas con roles administrativos requerirán soporte para MFA, interceptando accesos no autorizados en el *Middleware* de Next.js antes de la ejecución del código.
+\end{itemize}
+
+\end{document}
