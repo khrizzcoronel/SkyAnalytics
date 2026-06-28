@@ -1,0 +1,137 @@
+custom,pocketbase,users,id,1,text,15,PRIMARY KEY,N,N,N
+custom,pocketbase,users,email,2,text,255,UNIQUE,N,N,N
+custom,pocketbase,users,password,3,text,255,N,N,N,N
+custom,pocketbase,users,name,4,text,100,N,N,N,N
+custom,pocketbase,users,role,5,text,20,N,N,N,N
+custom,pocketbase,users,verified,6,bool,N,N,N,N,N
+custom,pocketbase,users,created,7,autodate,N,N,N,N,N
+custom,pocketbase,users,updated,8,autodate,N,N,N,N,N
+
+custom,pocketbase,flights_raw,id,1,text,15,PRIMARY KEY,N,N,N
+custom,pocketbase,flights_raw,fl_date,2,date,N,REQUIRED,N,N,N
+custom,pocketbase,flights_raw,op_unique_carrier,3,text,10,REQUIRED,N,N,N
+custom,pocketbase,flights_raw,op_carrier_fl_num,4,number,N,N,N,N,N
+custom,pocketbase,flights_raw,origin,5,text,10,N,N,N,N
+custom,pocketbase,flights_raw,dest,6,text,10,N,N,N,N
+custom,pocketbase,flights_raw,dep_delay,7,number,N,N,N,N,N
+custom,pocketbase,flights_raw,arr_delay,8,number,N,N,N,N,N
+custom,pocketbase,flights_raw,cancelled,9,bool,N,N,N,N,N
+custom,pocketbase,flights_raw,cancellation_code,10,text,1,N,N,N,N
+custom,pocketbase,flights_raw,diverted,11,bool,N,N,N,N,N
+custom,pocketbase,flights_raw,air_time,12,number,N,N,N,N,N
+custom,pocketbase,flights_raw,distance,13,number,N,N,N,N,N
+custom,pocketbase,flights_raw,carrier_delay,14,number,N,N,N,N,N
+custom,pocketbase,flights_raw,weather_delay,15,number,N,N,N,N,N
+custom,pocketbase,flights_raw,nas_delay,16,number,N,N,N,N,N
+custom,pocketbase,flights_raw,late_aircraft_delay,17,number,N,N,N,N,N
+custom,pocketbase,flights_raw,origin_city_name,18,text,100,N,N,N,N
+custom,pocketbase,flights_raw,origin_state_nm,19,text,100,N,N,N,N
+custom,pocketbase,flights_raw,dest_city_name,20,text,100,N,N,N,N
+custom,pocketbase,flights_raw,dest_state_nm,21,text,100,N,N,N,N
+custom,pocketbase,flights_raw,created,22,autodate,N,N,N,N,N
+custom,pocketbase,flights_raw,updated,23,autodate,N,N,N,N,N
+
+custom,pocketbase,historial_busquedas,id,1,text,15,PRIMARY KEY,N,N,N
+custom,pocketbase,historial_busquedas,usuario,2,relation,N,FOREIGN KEY,pocketbase,users,id
+custom,pocketbase,historial_busquedas,destino,3,text,10,N,N,N,N
+custom,pocketbase,historial_busquedas,origen,4,text,10,N,N,N,N
+custom,pocketbase,historial_busquedas,fecha_busqueda,5,date,N,N,N,N,N
+custom,pocketbase,historial_busquedas,encontro_vuelo,6,bool,N,N,N,N,N
+custom,pocketbase,historial_busquedas,created,7,autodate,N,N,N,N,N
+custom,pocketbase,historial_busquedas,updated,8,autodate,N,N,N,N,N
+
+custom,pocketbase,sesiones_activas,id,1,text,15,PRIMARY KEY,N,N,N
+custom,pocketbase,sesiones_activas,usuario,2,relation,N,FOREIGN KEY,pocketbase,users,id
+custom,pocketbase,sesiones_activas,token,3,text,500,N,N,N,N
+custom,pocketbase,sesiones_activas,dispositivo,4,text,100,N,N,N,N
+custom,pocketbase,sesiones_activas,ip_address,5,text,45,N,N,N,N
+custom,pocketbase,sesiones_activas,expires_at,6,date,N,N,N,N,N
+custom,pocketbase,sesiones_activas,created,7,autodate,N,N,N,N,N
+custom,pocketbase,sesiones_activas,updated,8,autodate,N,N,N,N,N
+
+custom,pocketbase,refresh_tokens,id,1,text,15,PRIMARY KEY,N,N,N
+custom,pocketbase,refresh_tokens,usuario,2,relation,N,FOREIGN KEY,pocketbase,users,id
+custom,pocketbase,refresh_tokens,token,3,text,500,N,N,N,N
+custom,pocketbase,refresh_tokens,expires_at,4,date,N,N,N,N,N
+custom,pocketbase,refresh_tokens,created,5,autodate,N,N,N,N,N
+custom,pocketbase,refresh_tokens,updated,6,autodate,N,N,N,N,N
+
+custom,pocketbase,verification_codes,id,1,text,15,PRIMARY KEY,N,N,N
+custom,pocketbase,verification_codes,usuario,2,relation,N,FOREIGN KEY,pocketbase,users,id
+custom,pocketbase,verification_codes,code,3,text,6,N,N,N,N
+custom,pocketbase,verification_codes,expires_at,4,date,N,N,N,N,N
+custom,pocketbase,verification_codes,verified,5,bool,N,N,N,N,N
+custom,pocketbase,verification_codes,created,6,autodate,N,N,N,N,N
+custom,pocketbase,verification_codes,updated,7,autodate,N,N,N,N,N
+
+custom,pocketbase,password_reset_tokens,id,1,text,15,PRIMARY KEY,N,N,N
+custom,pocketbase,password_reset_tokens,usuario,2,relation,N,FOREIGN KEY,pocketbase,users,id
+custom,pocketbase,password_reset_tokens,token,3,text,500,N,N,N,N
+custom,pocketbase,password_reset_tokens,expires_at,4,date,N,N,N,N,N
+custom,pocketbase,password_reset_tokens,used,5,bool,N,N,N,N,N
+custom,pocketbase,password_reset_tokens,created,6,autodate,N,N,N,N,N
+custom,pocketbase,password_reset_tokens,updated,7,autodate,N,N,N,N,N
+
+custom,pocketbase,ml_predictions_log,id,1,text,15,PRIMARY KEY,N,N,N
+custom,pocketbase,ml_predictions_log,requested_by,2,relation,N,FOREIGN KEY,pocketbase,users,id
+custom,pocketbase,ml_predictions_log,model_name,3,text,50,N,N,N,N
+custom,pocketbase,ml_predictions_log,request_params,4,json,N,N,N,N,N
+custom,pocketbase,ml_predictions_log,prediction,5,number,N,N,N,N,N
+custom,pocketbase,ml_predictions_log,actual_value,6,number,N,N,N,N,N
+custom,pocketbase,ml_predictions_log,error,7,number,N,N,N,N,N
+custom,pocketbase,ml_predictions_log,created,8,autodate,N,N,N,N,N
+custom,pocketbase,ml_predictions_log,updated,9,autodate,N,N,N,N,N
+
+custom,pocketbase,audit_log,id,1,text,15,PRIMARY KEY,N,N,N
+custom,pocketbase,audit_log,usuario,2,relation,N,FOREIGN KEY,pocketbase,users,id
+custom,pocketbase,audit_log,endpoint,3,text,500,N,N,N,N
+custom,pocketbase,audit_log,method,4,text,10,N,N,N,N
+custom,pocketbase,audit_log,params,5,text,2000,N,N,N,N
+custom,pocketbase,audit_log,status_code,6,number,N,N,N,N,N
+custom,pocketbase,audit_log,created,7,autodate,N,N,N,N,N
+custom,pocketbase,audit_log,updated,8,autodate,N,N,N,N,N
+
+custom,pocketbase,system_config,id,1,text,15,PRIMARY KEY,N,N,N
+custom,pocketbase,system_config,config_key,2,text,100,UNIQUE,N,N,N
+custom,pocketbase,system_config,config_value,3,text,500,N,N,N,N
+custom,pocketbase,system_config,updated_by,4,relation,N,FOREIGN KEY,pocketbase,users,id
+custom,pocketbase,system_config,created,5,autodate,N,N,N,N,N
+custom,pocketbase,system_config,updated,6,autodate,N,N,N,N,N
+
+custom,pocketbase,system_alerts,id,1,text,15,PRIMARY KEY,N,N,N
+custom,pocketbase,system_alerts,alert_type,2,text,50,N,N,N,N
+custom,pocketbase,system_alerts,severity,3,text,20,N,N,N,N
+custom,pocketbase,system_alerts,message,4,text,2000,N,N,N,N
+custom,pocketbase,system_alerts,resolved,5,bool,N,N,N,N,N
+custom,pocketbase,system_alerts,resolved_by,6,relation,N,FOREIGN KEY,pocketbase,users,id
+custom,pocketbase,system_alerts,resolved_at,7,datetime,N,N,N,N,N
+custom,pocketbase,system_alerts,created,8,autodate,N,N,N,N,N
+custom,pocketbase,system_alerts,updated,9,autodate,N,N,N,N,N
+
+custom,pocketbase,catalog_change_log,id,1,text,15,PRIMARY KEY,N,N,N
+custom,pocketbase,catalog_change_log,table_name,2,text,100,N,N,N,N
+custom,pocketbase,catalog_change_log,record_id,3,number,N,N,N,N,N
+custom,pocketbase,catalog_change_log,action,4,text,20,N,N,N,N
+custom,pocketbase,catalog_change_log,old_values,5,json,N,N,N,N,N
+custom,pocketbase,catalog_change_log,new_values,6,json,N,N,N,N,N
+custom,pocketbase,catalog_change_log,changed_by,7,relation,N,FOREIGN KEY,pocketbase,users,id
+custom,pocketbase,catalog_change_log,created,8,autodate,N,N,N,N,N
+custom,pocketbase,catalog_change_log,updated,9,autodate,N,N,N,N,N
+
+custom,pocketbase,user_preferences,id,1,text,15,PRIMARY KEY,N,N,N
+custom,pocketbase,user_preferences,usuario,2,relation,N,FOREIGN KEY,pocketbase,users,id
+custom,pocketbase,user_preferences,default_airline,3,text,10,N,N,N,N
+custom,pocketbase,user_preferences,default_airport,4,text,10,N,N,N,N
+custom,pocketbase,user_preferences,default_date_range,5,text,30,N,N,N,N
+custom,pocketbase,user_preferences,theme,6,text,10,N,N,N,N
+custom,pocketbase,user_preferences,language,7,text,5,N,N,N,N
+custom,pocketbase,user_preferences,created,8,autodate,N,N,N,N,N
+custom,pocketbase,user_preferences,updated,9,autodate,N,N,N,N,N
+
+custom,pocketbase,reportes_guardados,id,1,text,15,PRIMARY KEY,N,N,N
+custom,pocketbase,reportes_guardados,usuario,2,relation,N,FOREIGN KEY,pocketbase,users,id
+custom,pocketbase,reportes_guardados,nombre,3,text,100,N,N,N,N
+custom,pocketbase,reportes_guardados,filtros_json,4,json,N,N,N,N,N
+custom,pocketbase,reportes_guardados,endpoint,5,text,200,N,N,N,N
+custom,pocketbase,reportes_guardados,created,6,autodate,N,N,N,N,N
+custom,pocketbase,reportes_guardados,updated,7,autodate,N,N,N,N,N

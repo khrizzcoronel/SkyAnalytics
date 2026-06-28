@@ -1,0 +1,3 @@
+# SkyAnalytics Backend Dependencies
+# Por ahora los simuladores usan la librería estándar, pero aquí se agregarán las reales (ej. pandas, scikit-learn).
+requests==2.31.0

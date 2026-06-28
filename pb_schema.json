@@ -1,0 +1,154 @@
+[
+  {
+    "name": "strategic_targets",
+    "type": "base",
+    "system": false,
+    "schema": [
+      {
+        "system": false,
+        "id": "kpifld01",
+        "name": "kpi_name",
+        "type": "text",
+        "required": true,
+        "presentable": true,
+        "unique": false,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "system": false,
+        "id": "tgtfld02",
+        "name": "target_value",
+        "type": "number",
+        "required": true,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "min": null,
+          "max": null,
+          "noDecimal": false
+        }
+      },
+      {
+        "system": false,
+        "id": "qtrfld03",
+        "name": "quarter",
+        "type": "text",
+        "required": true,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      }
+    ],
+    "indexes": [],
+    "listRule": "",
+    "viewRule": "",
+    "createRule": "@request.auth.id != '' && @request.auth.role = 'SUPER_ADMIN'",
+    "updateRule": "@request.auth.id != '' && @request.auth.role = 'SUPER_ADMIN'",
+    "deleteRule": "@request.auth.id != '' && @request.auth.role = 'SUPER_ADMIN'",
+    "options": {}
+  },
+  {
+    "name": "finops_budgets",
+    "type": "base",
+    "system": false,
+    "schema": [
+      {
+        "system": false,
+        "id": "srvfld01",
+        "name": "service_name",
+        "type": "text",
+        "required": true,
+        "presentable": true,
+        "unique": false,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "system": false,
+        "id": "maxfld02",
+        "name": "max_spend",
+        "type": "number",
+        "required": true,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "min": 0,
+          "max": null,
+          "noDecimal": false
+        }
+      },
+      {
+        "system": false,
+        "id": "alrfld03",
+        "name": "alert_threshold",
+        "type": "number",
+        "required": true,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "min": 1,
+          "max": 100,
+          "noDecimal": false
+        }
+      }
+    ],
+    "indexes": [],
+    "listRule": "@request.auth.id != ''",
+    "viewRule": "@request.auth.id != ''",
+    "createRule": "@request.auth.role = 'SUPER_ADMIN' || @request.auth.role = 'FINOPS_MANAGER'",
+    "updateRule": "@request.auth.role = 'SUPER_ADMIN' || @request.auth.role = 'FINOPS_MANAGER'",
+    "deleteRule": "@request.auth.role = 'SUPER_ADMIN'",
+    "options": {}
+  },
+  {
+    "name": "rbac_policies",
+    "type": "base",
+    "system": false,
+    "schema": [
+      {
+        "system": false,
+        "id": "rolfld01",
+        "name": "role_name",
+        "type": "text",
+        "required": true,
+        "presentable": true,
+        "unique": false,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "system": false,
+        "id": "modfld02",
+        "name": "allowed_modules",
+        "type": "json",
+        "required": true,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "maxSize": 2000000
+        }
+      }
+    ],
+    "indexes": [],
+    "listRule": "@request.auth.id != ''",
+    "viewRule": "@request.auth.id != ''",
+    "createRule": "@request.auth.role = 'SUPER_ADMIN'",
+    "updateRule": "@request.auth.role = 'SUPER_ADMIN'",
+    "deleteRule": "@request.auth.role = 'SUPER_ADMIN'",
+    "options": {}
+  }
+]

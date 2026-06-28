@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - RAPIDAPI_PROXY_SECRET=test_secret_123
+    restart: unless-stopped
+    depends_on:
+      - pocketbase
+
+  backend:
+    build:
+      context: ./backend
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  pocketbase:
+    image: ghcr.io/muchobien/pocketbase:latest
+    ports:
+      - "8090:8090"
+    volumes:
+      - pb_data:/pb_data
+    restart: unless-stopped
+
+  monetdb:
+    image: monetdb/monetdb:latest
+    ports:
+      - "50000:50000"
+    environment:
+      - MDB_DB_ADMIN_PASS=skyanalytics_secure
+    volumes:
+      - monetdb_data:/var/monetdb5
+    restart: unless-stopped
+
+volumes:
+  pb_data:
+  monetdb_data:
