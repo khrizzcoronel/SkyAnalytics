@@ -7,11 +7,11 @@
 ## 2. Stack Tecnológico
 El ecosistema adopta un enfoque moderno, *cloud-native* y orientado a alta disponibilidad:
 
-*   **Infraestructura y Despliegue:** Plataforma PaaS (Render/Railway) o Serverless gestionado mediante Infrastructure as Code (IaC) con Scripts básicos de despliegue.
+*   **Infraestructura y Despliegue:** Plataforma PaaS (Render/Railway) o Serverless gestionado mediante Infrastructure as Code (IaC) con Terraform.
 *   **API y Gateway:** API Gateway del framework. Soporte para APIs REST y GraphQL.
 *   **Bases de Datos:** Arquitectura híbrida compuesta por **PocketBase** (Base de Datos Operativa/Transaccional basada en SQLite) y **MonetDB** (Data Warehouse columnar masivo para Analítica).
 *   **Ingeniería de Datos:** GitHub Actions (Cron) (orquestación), dbt (transformación), Validaciones nativas (Pydantic/Zod) (validación de calidad).
-*   **Machine Learning (MLOps):** Tracking básico o local (tracking y registry), Archivos Parquet locales, XGBoost / LightGBM (modelos core), SHAP (explainability), y Whisper/TrOCR (Deep Learning para NLP/OCR).
+*   **Machine Learning (MLOps):** MLflow (tracking y registry), almacenamiento de artefactos en Parquet/S3, XGBoost / LightGBM (modelos core), SHAP (explainability), y Whisper/TrOCR (Deep Learning para NLP/OCR).
 *   **CI/CD:** GitHub Actions.
 *   **Observabilidad:** Logs estándar y Sentry para errores y Notificaciones de Slack.
 *   **Documentación y SDKs:** Mintlify (Developer Portal), OpenAPI Generator (SDKs en Python, JS, Java).
@@ -32,7 +32,7 @@ El ecosistema adopta un enfoque moderno, *cloud-native* y orientado a alta dispo
 *   **Cifrado:** Obligatorio el cifrado End-to-End. **TLS 1.3** para datos en tránsito y **AES-256** para datos en reposo (KMS).
 *   **Gestión de Secretos:** Prohibido almacenar credenciales en código. Uso exclusivo de **Variables de Entorno (.env)** con rotación automática mensual.
 *   **DevSecOps:** Ejecución obligatoria de escaneos estáticos (SAST - SonarQube) y dinámicos (DAST - OWASP ZAP) en el pipeline de CI/CD. Vulnerabilidades críticas o altas bloquean automáticamente el merge.
-*   **Auditoría y Compliance:** La arquitectura debe diseñarse previendo el cumplimiento estricto de normativas Buenas prácticas de seguridad, Higiene de seguridad, GDPR y lineamientos IATA. Auditorías IAM trimestrales obligatorias.
+*   **Auditoría y Compliance:** La arquitectura debe diseñarse previendo el cumplimiento estricto de normativas SOC 2, ISO 27001, GDPR y lineamientos IATA. Auditorías IAM trimestrales obligatorias.
 
 ## 6. Reglas de Base de Datos
 *   **Separación de Cargas:** Separación estricta entre transaccional (OLTP) y analítica (OLAP).
@@ -50,11 +50,48 @@ El ecosistema adopta un enfoque moderno, *cloud-native* y orientado a alta dispo
 *   **Uptime y Resiliencia:** Objetivo innegociable de disponibilidad global $\geq$ 99.0% (Best Effort).
 *   **Recuperación ante Desastres (DR):** RPO (Recovery Point Objective) $\leq$ 5 minutos; RTO (Recovery Time Objective) $\leq$ 15 minutos.
 *   **Gestión de Incidentes:** Tiempo de primera respuesta a tickets $\leq$ 2 horas. Resolución de incidentes críticos $\leq$ 15 min (MTTR). Todo incidente de severidad alta requiere un Post-Mortem "blameless" en menos de 72 horas.
-*   **Error Budget:** Si el consumo del presupuesto de error (Error Budget) supera el 80% en un mes (aprox. 3.5 min de caída), se **congelan los despliegues de nuevas funcionalidades** hasta recuperar estabilidad.
+*   **Error Budget:** Con un SLA 99.0% (Best Effort), el Error Budget mensual total es de 432 minutos. Si el consumo supera el 80% (~345.6 min de caída), se **congelan los despliegues de nuevas funcionalidades** hasta recuperar estabilidad.
 
 ## 9. Decisiones Técnicas Transversales
 *   **Cultura Remote-First:** Operación diseñada para equipos distribuidos globalmente, favoreciendo fuertemente el trabajo asíncrono, automatizaciones (Slack bots), documentación profunda y métricas DORA (velocity, cycle time).
 *   **Gestión de Costos FinOps:** El gasto cloud no es un tema posterior; se requiere monitoreo de anomalías financieras, rightsizing y alertas de desviación diaria vs forecast como parte integral del desarrollo operativo (SRE).
+
+## 10. Organización del Repositorio por Dominios
+Las especificaciones y código se organizan por **dominios funcionales y usuarios**, no por niveles estratégicos abstractos. Cada módulo agrupa casos de uso cohesivos y tiene un usuario dueño principal.
+
+| Carpeta | Dominio | CUs | Usuario principal |
+|---|---|---|---|
+| `specs/01-identidad-acceso` | Auth, Tenant, IAM | CU-O01, CU-O12 | Cliente B2B / SRE |
+| `specs/02-api-vuelos` | Flight API, rate-limit, cache | CU-O02 | Cliente B2B (M2M) |
+| `specs/03-data-pipeline` | ETL, ingest, quality, drift | CU-O03, CU-O04, CU-O17, CU-O21..O24, CU-T04 | Data Engineer |
+| `specs/04-ml` | ML training, registry, DL | CU-O05, CU-O20, CU-T05 | ML Engineer |
+| `specs/05-bi-estrategico` | BI refresh, BSC, Finance, SRE/SLA, Compliance, eNPS | CU-O06, CU-E01..E04, CU-E06 | Founder / C-Level |
+| `specs/06-observabilidad-sre` | Telemetry, Error Budget, Changelog, Post-Mortem, DR | CU-O07, CU-O09..O11, CU-O13 | SRE |
+| `specs/07-soporte` | Bug triage, FAQ RAG, Sprints | CU-O08, CU-O14, CU-O15 | Customer Success / PM |
+| `specs/08-devex` | OpenAPI lint, Developer Portal, SDKs | CU-O16, CU-T07 | DevRel |
+| `specs/09-seguridad` | SAST/DAST, Security Alerts | CU-O18, CU-T06 | SecOps |
+| `specs/10-finops` | Cloud cost | CU-O19, CU-T08 | FinOps |
+| `specs/11-growth-monetization` | Growth, RapidAPI, IaC guard, Pricing A/B | CU-T01..T03, CU-T10 | Growth PM |
+| `specs/12-resilience-testing` | Chaos, load tests | CU-T09 | SRE |
+| `specs/13-okr-talento` | OKR simulator | CU-E05 | Founder |
+
+### Roles canónicos del sistema
+*   `SUPER_ADMIN`
+*   `C_LEVEL_EXEC`
+*   `BOARD_MEMBER`
+*   `OPERATOR` (solo lectura operativa)
+*   `SRE`
+*   `DATA_ENGINEER`
+*   `ML_ENGINEER`
+*   `FINOPS_MANAGER`
+*   `SECOPS`
+*   `GROWTH_PM`
+*   `DEVREL`
+*   `CUSTOMER_SUCCESS`
+*   `TENANT_ADMIN`
+*   `CLIENT_API` (rol implícito para consumidores M2M con API Key)
+
+La matriz completa de permisos usuario × módulo se encuentra en `specs/000-sistema-general/matriz-usuarios-modulos.md`.
 
 ## Reglas Globales Resueltas (Speckit-Clarify)
 1. **Rate Limiting:** Soft Limit de 1 hora.
@@ -62,3 +99,4 @@ El ecosistema adopta un enfoque moderno, *cloud-native* y orientado a alta dispo
 3. **Logs:** Retención obligatoria de 30 días.
 4. **Secretos:** Inyectados vía GitHub Secrets (CI/CD).
 5. **Incidentes:** Status Page + Email automático a usuarios.
+6. **Dataset Semilla (BTS 2024):** Bureau of Transportation Statistics. Dataset de 7.08M vuelos domésticos EE.UU. como fuente primaria. Importado de forma incremental mediante contenedor Docker `importer` con checkpoint. La tabla `flights_raw` en PocketBase es la Staging Layer oficial y el script `import_flights.py` es el único con permisos de creación.

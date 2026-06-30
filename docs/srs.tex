@@ -96,8 +96,8 @@ SkyAnalytics se enmarca en un modelo de arquitectura \textbf{Monolito Modular Se
 La aplicación principal se construye utilizando \textbf{Next.js (App Router)} y se despliega en un proveedor PaaS Serverless (Vercel). 
 La persistencia de datos utiliza un enfoque híbrido:
 \begin{itemize}
-    \item \textbf{PocketBase (Operativa):} Base de datos ligera (SQLite) alojada en una VPS, responsable de la autenticación de usuarios, roles (RBAC), configuración del sistema, alertas y límites FinOps.
-    \item \textbf{MonetDB (Analítica):} Motor columnar Data Warehouse especializado en procesamiento de grandes volúmenes de datos. Almacena las tablas de hechos (*Fact Tables*) alimentadas por el ETL y expone vistas materializadas para lectura instantánea.
+    \item \textbf{PocketBase (Operativa y Staging):} Base de datos ligera (SQLite) alojada en una VPS, responsable de la autenticación de usuarios, roles (RBAC), configuración del sistema, alertas, límites FinOps y de actuar como la capa intermedia de Staging (`flights_raw`) para el dataset semilla.
+    \item \textbf{MonetDB (Analítica):} Motor columnar Data Warehouse especializado en procesamiento de grandes volúmenes de datos. Almacena las tablas de hechos (*Fact Tables*) estructuradas en estrella alimentadas por el ETL y expone vistas materializadas para lectura instantánea. En este motor se consolida el entrenamiento ML.
 \end{itemize}
 
 \subsection{Funciones del Producto}

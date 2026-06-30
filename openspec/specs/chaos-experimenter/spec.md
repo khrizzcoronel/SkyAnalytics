@@ -1,3 +1,7 @@
+﻿---
+module: 12-resilience-testing
+primary_user: SRE
+---
 ## ADDED Requirements
 
 ### Requirement: Seguridad de Chaos Engineering

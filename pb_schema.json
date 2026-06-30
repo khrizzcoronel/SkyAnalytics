@@ -148,6 +148,150 @@
     "viewRule": "@request.auth.id != ''",
     "createRule": "@request.auth.role = 'SUPER_ADMIN'",
     "updateRule": "@request.auth.role = 'SUPER_ADMIN'",
+    "deleteRule": "@request.auth.role = 'SUPER_ADMIN'"
+  },
+  {
+    "name": "tenants",
+    "type": "base",
+    "system": false,
+    "schema": [
+      {
+        "system": false,
+        "id": "tntfld01",
+        "name": "company_name",
+        "type": "text",
+        "required": true,
+        "presentable": true,
+        "unique": false,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "system": false,
+        "id": "tntfld02",
+        "name": "contact_email",
+        "type": "email",
+        "required": true,
+        "presentable": true,
+        "unique": true,
+        "options": {
+          "exceptDomains": [],
+          "onlyDomains": []
+        }
+      },
+      {
+        "system": false,
+        "id": "tntfld03",
+        "name": "country",
+        "type": "text",
+        "required": false,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "system": false,
+        "id": "tntfld04",
+        "name": "status",
+        "type": "select",
+        "required": true,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "maxSelect": 1,
+          "values": ["pending", "active", "suspended"]
+        }
+      },
+      {
+        "system": false,
+        "id": "tntfld05",
+        "name": "live_key_hash",
+        "type": "text",
+        "required": true,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "system": false,
+        "id": "tntfld06",
+        "name": "test_key_hash",
+        "type": "text",
+        "required": true,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      }
+    ],
+    "indexes": [],
+    "listRule": "@request.auth.id != '' && @request.auth.role = 'SUPER_ADMIN'",
+    "viewRule": "@request.auth.id != '' && @request.auth.role = 'SUPER_ADMIN'",
+    "createRule": "@request.auth.id != '' && @request.auth.role = 'SUPER_ADMIN'",
+    "updateRule": "@request.auth.id != '' && @request.auth.role = 'SUPER_ADMIN'",
+    "deleteRule": "@request.auth.id != '' && @request.auth.role = 'SUPER_ADMIN'",
+    "options": {}
+  },
+  {
+    "name": "flights_raw",
+    "type": "base",
+    "system": false,
+    "schema": [
+      {"name": "fl_date", "type": "text", "required": true},
+      {"name": "op_unique_carrier", "type": "text", "required": true},
+      {"name": "op_carrier_fl_num", "type": "number"},
+      {"name": "origin", "type": "text"},
+      {"name": "dest", "type": "text"},
+      {"name": "dep_delay", "type": "number"},
+      {"name": "arr_delay", "type": "number"},
+      {"name": "cancelled", "type": "bool"},
+      {"name": "cancellation_code", "type": "text"},
+      {"name": "diverted", "type": "bool"},
+      {"name": "air_time", "type": "number"},
+      {"name": "distance", "type": "number"},
+      {"name": "carrier_delay", "type": "number"},
+      {"name": "weather_delay", "type": "number"},
+      {"name": "nas_delay", "type": "number"},
+      {"name": "late_aircraft_delay", "type": "number"},
+      {"name": "origin_city_name", "type": "text"},
+      {"name": "origin_state_nm", "type": "text"},
+      {"name": "dest_city_name", "type": "text"},
+      {"name": "dest_state_nm", "type": "text"},
+      {"name": "year", "type": "number"},
+      {"name": "month", "type": "number"},
+      {"name": "day_of_month", "type": "number"},
+      {"name": "day_of_week", "type": "number"},
+      {"name": "crs_dep_time", "type": "number"},
+      {"name": "dep_time", "type": "number"},
+      {"name": "taxi_out", "type": "number"},
+      {"name": "wheels_off", "type": "number"},
+      {"name": "wheels_on", "type": "number"},
+      {"name": "taxi_in", "type": "number"},
+      {"name": "crs_arr_time", "type": "number"},
+      {"name": "arr_time", "type": "number"},
+      {"name": "crs_elapsed_time", "type": "number"},
+      {"name": "actual_elapsed_time", "type": "number"},
+      {"name": "security_delay", "type": "number"}
+    ],
+    "indexes": [],
+    "listRule": "@request.auth.id != ''",
+    "viewRule": "@request.auth.id != ''",
+    "createRule": "@request.auth.role = 'SUPER_ADMIN'",
+    "updateRule": "@request.auth.role = 'SUPER_ADMIN'",
     "deleteRule": "@request.auth.role = 'SUPER_ADMIN'",
     "options": {}
   }

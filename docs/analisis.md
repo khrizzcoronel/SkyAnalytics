@@ -1,4 +1,4 @@
-﻿<div class="titlepage">
+<div class="titlepage">
 
 **SkyAnalytics Inc.**\
 **Drive:**
@@ -1075,7 +1075,7 @@ Resumen analítico integrado por nivel organizacional
 
 | **APIs + Dev Portal** | $`\rightarrow`$ | **BD Transaccional** | $`\rightarrow`$ | **ETL + Validación** | $`\rightarrow`$ | **Data Warehouse** | $`\rightarrow`$ | **BI + ML Pipeline** | $`\rightarrow`$ | **Reportes** |
 |:---|:--:|:---|:--:|:---|:--:|:---|:--:|:---|:--:|:---|
-| REST/GraphQL, OAuth2, Rate Limits, SDKs |  | PocketBase, registro tenants, consumo API |  | Great Expectations, dbt, Airflow |  | MonetDB columnar, catálogo datos |  | PowerBI, MLflow, Feast, SHAP |  | Dashboards, predicciones, alertas |
+| REST/GraphQL, OAuth2, Rate Limits, SDKs |  | PocketBase, registro tenants, consumo API |  | Validaciones nativas, dbt, GitHub Actions |  | MonetDB columnar, catálogo datos |  | PowerBI, MLflow, SHAP |  | Dashboards, predicciones, alertas |
 
 Flujo de datos y componentes del ecosistema SkyAnalytics
 

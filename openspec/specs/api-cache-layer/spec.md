@@ -1,3 +1,7 @@
+﻿---
+module: 02-api-vuelos
+primary_user: CLIENT_API
+---
 ## ADDED Requirements
 
 ### Requirement: Caché (In-Memory)

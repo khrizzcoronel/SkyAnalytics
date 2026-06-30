@@ -1,11 +1,18 @@
+import os
 from datetime import datetime
 
 class PostMortemGenerator:
-    BANNED_NAMES = ["juan", "pedro", "maria", "carlos", "kacor"]
+    DEFAULT_BANNED_NAMES = ["juan", "pedro", "maria", "carlos"]
+
+    def __init__(self, banned_names: list[str] | None = None):
+        if banned_names is None:
+            env_names = os.getenv("POSTMORTEM_BANNED_NAMES", "")
+            banned_names = [n.strip().lower() for n in env_names.split(",") if n.strip()] or self.DEFAULT_BANNED_NAMES
+        self.banned_names = banned_names
 
     def blameless_check(self, text: str) -> bool:
         text_lower = text.lower()
-        for name in self.BANNED_NAMES:
+        for name in self.banned_names:
             if name in text_lower:
                 print(f"[BLAMELESS CHECK] VIOLACION: Se detecto el nombre '{name}'. El RCA debe enfocarse en procesos, no culpar personas.")
                 return False

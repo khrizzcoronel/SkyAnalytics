@@ -1,0 +1,47 @@
+name: Daily ETL Flights
+
+on:
+  schedule:
+    - cron: '0 3 * * *' # 03:00 AM UTC diariamente
+  workflow_dispatch: # Permite disparo manual
+
+jobs:
+  run-etl:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          pip install -r backend/requirements.txt
+          pip install pandas pyarrow pymonetdb
+
+      # Zero Trust: Levantar túnel seguro efímero antes de conectar a la base de datos
+      - name: Start Secure SSH Tunnel
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh -o StrictHostKeyChecking=no -f -N -L 50000:localhost:50000 $VPS_USER@$VPS_HOST
+          echo "SSH Tunnel established successfully on port 50000!"
+
+      - name: Run ETL Pipeline via SSH
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          MONETDB_USER: ${{ secrets.MONETDB_USER }}
+          MONETDB_PASS: ${{ secrets.MONETDB_PASS }}
+        run: |
+          ssh -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST \
+            "cd /opt/skyanalytics && export MONETDB_USER=$MONETDB_USER MONETDB_PASS=$MONETDB_PASS && python backend/src/etl/etl_flights_to_monetdb.py"

@@ -10,7 +10,7 @@ export default function EngineeringDashboardPage() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   const fetchHealthData = async () => {
     try {
@@ -33,13 +33,17 @@ export default function EngineeringDashboardPage() {
   };
 
   useEffect(() => {
-    // Initial fetch
     fetchHealthData();
 
-    // Polling cada 30 segundos (30000 ms)
     const intervalId = setInterval(fetchHealthData, 30000);
-    return () => clearInterval(intervalId);
+    return () => {
+      clearInterval(intervalId);
+    };
   }, []);
+
+  const lastUpdatedText = lastUpdated
+    ? lastUpdated.toLocaleTimeString('es-ES')
+    : '--:--:--';
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
@@ -47,7 +51,7 @@ export default function EngineeringDashboardPage() {
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Salud del Sistema (SRE)</h1>
           <p className="text-gray-500 mt-1 flex items-center gap-2">
-            Métricas de SLA global. <span className="text-xs bg-gray-200 px-2 py-1 rounded text-gray-700">Actualizado: {lastUpdated.toLocaleTimeString()}</span>
+            Métricas de SLA global. <span className="text-xs bg-gray-200 px-2 py-1 rounded text-gray-700">Actualizado: {lastUpdatedText}</span>
           </p>
         </div>
         <PrintSlaReportButton customerName="Acme Corp - Enterprise Plan" />

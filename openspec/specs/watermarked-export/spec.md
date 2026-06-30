@@ -1,3 +1,7 @@
+﻿---
+module: 05-bi-estrategico
+primary_user: C_LEVEL_EXEC
+---
 ## ADDED Requirements
 
 ### Requirement: Trazabilidad en Exportación (Marca de Agua)

@@ -1,3 +1,7 @@
+﻿---
+module: 05-bi-estrategico
+primary_user: C_LEVEL_EXEC
+---
 ## ADDED Requirements
 
 ### Requirement: Refresco de Vistas y Purga de Caché

@@ -1,3 +1,7 @@
+﻿---
+module: 07-soporte
+primary_user: CUSTOMER_SUCCESS
+---
 ## ADDED Requirements
 
 ### Requirement: Triage Automatizado

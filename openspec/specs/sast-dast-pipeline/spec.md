@@ -1,3 +1,7 @@
+﻿---
+module: 09-seguridad
+primary_user: SECOPS
+---
 ## ADDED Requirements
 
 ### Requirement: Detección de Secretos y Vulnerabilidades

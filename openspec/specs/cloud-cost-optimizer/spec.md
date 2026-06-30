@@ -1,3 +1,7 @@
+﻿---
+module: 10-finops
+primary_user: FINOPS_MANAGER
+---
 ## ADDED Requirements
 
 ### Requirement: Snoozing Automático y Control de Gasto

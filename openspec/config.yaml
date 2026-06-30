@@ -1,20 +1,59 @@
 schema: spec-driven
 
-# Project context (optional)
+# Project context
 # This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+context: |
+  SkyAnalytics is a B2B SaaS predictive aviation intelligence platform.
+  It converts historical and real-time flight data (BTS 2024) into predictive APIs
+  and self-service dashboards for airlines, travel agencies, logistics operators
+  and government entities.
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+  Tech stack:
+    - Frontend: Next.js 16 (App Router), React 19, TypeScript 5, Tailwind v4
+    - Backend: Python 3.11, FastAPI, uvicorn
+    - Databases: PocketBase (SQLite OLTP), MonetDB (columnar OLAP)
+    - Data engineering: pandas, pydantic, pymonetdb, pyarrow, boto3
+    - Machine Learning: XGBoost, scikit-learn, MLflow
+    - Containers: Docker, docker-compose
+    - CI/CD: GitHub Actions
+    - Observability: OpenTelemetry, Sentry
+
+  We follow Specification-Driven Development (SDD):
+    - All features start as specs under specs/<module>/CU-*.md
+    - Implementation is tracked via OpenSpec changes under openspec/changes/
+    - Architecture decisions are documented as ADRs
+    - API contracts are OpenAPI 3.1 first
+    - Security: Zero Trust, TLS 1.3, AES-256 at rest, secrets via env vars
+
+  Domain modules (physical folders):
+    - 01-identidad-acceso
+    - 02-api-vuelos
+    - 03-data-pipeline
+    - 04-ml
+    - 05-bi-estrategico
+    - 06-observabilidad-sre
+    - 07-soporte
+    - 08-devex
+    - 09-seguridad
+    - 10-finops
+    - 11-growth-monetization
+    - 12-resilience-testing
+    - 13-okr-talento
+
+# Per-artifact rules
+rules:
+  proposal:
+    - Keep proposals under 800 words
+    - Always include scope, motivation and acceptance criteria
+    - Reference the affected CU and domain module
+  design:
+    - Include data model, API contract and component changes
+    - Declare external integrations and dependencies
+  tasks:
+    - Break tasks into chunks of max 4 hours
+    - Each task must reference at least one requirement ID (RF/RNF/RN/CA)
+    - Mark tasks as [x] only when code is merged and tested
+  spec:
+    - Use the 13-section template: Name, Objetivo, Actores, Contexto,
+      RF, RNF, RN, Entradas, Salidas, Escenarios, CA, Restricciones, Fuera de Alcance
+    - All requirements must have unique IDs

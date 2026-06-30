@@ -1,3 +1,7 @@
+﻿---
+module: 13-okr-talento
+primary_user: C_LEVEL_EXEC
+---
 ## ADDED Requirements
 
 ### Requirement: Simulación "What-If" para OKRs

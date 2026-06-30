@@ -1,3 +1,7 @@
+﻿---
+module: 05-bi-estrategico
+primary_user: C_LEVEL_EXEC
+---
 ## ADDED Requirements
 
 ### Requirement: Autenticación y Control de Acceso (RBAC)

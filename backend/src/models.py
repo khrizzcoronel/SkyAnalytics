@@ -23,8 +23,5 @@ class Tenant(BaseModel):
             raise ValueError(f"Por favor utiliza un correo corporativo válido. El dominio '{domain}' no está permitido.")
         return v
 
-def pydantic_default_uuid():
-    return str(uuid.uuid4())
-
 # Arreglo para que Pydantic maneje el default
 Tenant.model_fields['id'].default_factory = lambda: str(uuid.uuid4())

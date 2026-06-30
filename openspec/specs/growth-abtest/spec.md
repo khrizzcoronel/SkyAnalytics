@@ -1,3 +1,7 @@
+﻿---
+module: 11-growth-monetization
+primary_user: GROWTH_PM
+---
 ## ADDED Requirements
 
 ### Requirement: Enrutamiento A/B y Grandfathering

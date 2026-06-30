@@ -1,3 +1,7 @@
+﻿---
+module: 09-seguridad
+primary_user: SECOPS
+---
 ## ADDED Requirements
 
 ### Requirement: Alerta y Auto-remediación WAF

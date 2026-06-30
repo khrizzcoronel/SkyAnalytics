@@ -1,3 +1,7 @@
+﻿---
+module: 03-data-pipeline
+primary_user: DATA_ENGINEER
+---
 ## ADDED Requirements
 
 ### Requirement: Detención del Pipeline (Circuit Breaker)

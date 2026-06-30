@@ -1,3 +1,7 @@
+﻿---
+module: 06-observabilidad-sre
+primary_user: SRE
+---
 ## ADDED Requirements
 
 ### Requirement: Validación de RTO (Recovery Time Objective)

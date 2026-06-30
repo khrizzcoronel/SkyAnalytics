@@ -1,3 +1,7 @@
+﻿---
+module: 10-finops
+primary_user: FINOPS_MANAGER
+---
 ## ADDED Requirements
 
 ### Requirement: Alerta Temprana de Costos (FinOps)

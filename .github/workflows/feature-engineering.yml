@@ -1,0 +1,59 @@
+name: Weekly ML Feature Engineering
+
+on:
+  workflow_run:
+    workflows: ["Daily ETL Flights"]
+    types:
+      - completed
+  schedule:
+    - cron: '0 5 * * 0' # Domingos a las 05:00 AM UTC
+  workflow_dispatch:
+
+jobs:
+  features-and-train:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          pip install pandas pyarrow pymonetdb boto3 xgboost scikit-learn
+
+      - name: Start Secure SSH Tunnel
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh -o StrictHostKeyChecking=no -f -N -L 50000:localhost:50000 $VPS_USER@$VPS_HOST
+          echo "SSH Tunnel established!"
+
+      - name: Run Feature Engineering
+        env:
+          MONETDB_HOST: 127.0.0.1
+          MONETDB_PORT: 50000
+          MONETDB_USER: ${{ secrets.MONETDB_USER }}
+          MONETDB_PASS: ${{ secrets.MONETDB_PASS }}
+          MONETDB_DB: demo
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          python backend/src/ml/feature_engineering.py
+
+      - name: Run ML Re-training
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          python backend/src/ml/train_xgboost_model.py

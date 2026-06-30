@@ -6,15 +6,15 @@ export async function GET() {
     const repo = StrategicRepository.getInstance();
     const telemetry = await repo.fetchSreTelemetry();
 
-    // 4.38 min/month = 262.8 seconds
-    const TOTAL_ERROR_BUDGET_SECONDS = 262.8; 
-    
-    // Simplificación: si uptime global es 99.995%, la caída fue 0.005%. 
-    // En 30 días = 2,592,000 segundos. El 0.005% = 129.6s consumidos.
+    // 99.0% SLA => 1% downtime mensual permitido
+    // 30 días = 2,592,000 segundos => 1% = 25,920 segundos = 432 minutos
+    const TOTAL_ERROR_BUDGET_SECONDS = 25920;
+
+    // Simplificación: caída acumulada = 100 - uptime_global
     const downtimePercentage = 100 - telemetry.global_uptime;
     const SECONDS_IN_MONTH = 30 * 24 * 60 * 60;
     const consumedSeconds = (downtimePercentage / 100) * SECONDS_IN_MONTH;
-    
+
     const remainingSeconds = TOTAL_ERROR_BUDGET_SECONDS - consumedSeconds;
     const consumedPercentage = (consumedSeconds / TOTAL_ERROR_BUDGET_SECONDS) * 100;
 

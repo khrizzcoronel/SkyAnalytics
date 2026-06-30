@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Printer } from 'lucide-react';
 
 interface Props {
@@ -8,11 +8,19 @@ interface Props {
 }
 
 export const WatermarkedPdfButton: React.FC<Props> = ({ userEmail }) => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const handlePrint = () => {
     window.print();
   };
 
-  const watermarkText = `Confidencial - Exportado por ${userEmail} - ${new Date().toLocaleString()}`;
+  const watermarkText = mounted
+    ? `Confidencial - Exportado por ${userEmail} - ${new Date().toLocaleString('es-ES')}`
+    : `Confidencial - Exportado por ${userEmail}`;
 
   return (
     <>

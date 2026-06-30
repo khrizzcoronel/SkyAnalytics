@@ -6,6 +6,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY src/ ./src/
 
-# Por defecto, el backend no tiene un servidor web expuesto aún (son scripts ETL/ML).
-# Se puede sobreescribir este comando para ejecutar el monitor o scheduler.
-CMD ["python", "src/tactical/data_quality_monitor.py"]
+# Exponer la API Gateway de SkyAnalytics (FastAPI + uvicorn)
+EXPOSE 8000
+
+CMD ["uvicorn", "src.api_server:app", "--host", "0.0.0.0", "--port", "8000"]

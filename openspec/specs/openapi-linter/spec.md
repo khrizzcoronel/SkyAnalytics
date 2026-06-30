@@ -1,3 +1,7 @@
+﻿---
+module: 08-devex
+primary_user: DEVREL
+---
 ## ADDED Requirements
 
 ### Requirement: Validación Linter y Diff
